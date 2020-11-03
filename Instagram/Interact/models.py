@@ -19,12 +19,18 @@ from django.contrib.auth.models import User
 #
 
 class Uploads(models.Model):
-    images=models.ImageField()
-    videos=models.FileField()
+    images=models.ImageField(blank=True)
+    videos=models.FileField(blank=True)
 
 
 class Profile(models.Model):
-    user=models.ForeignKey(User,related_name='user',on_delete=models.CASCADE,unique=True)
-    follows=models.ManyToManyField(User,related_name='followers',symmetrical=False)
-    uploads=models.ManyToManyField(Uploads,related_name='uploads')
+    user=models.OneToOneField(User,related_name='user',on_delete=models.CASCADE)
+    follows=models.ManyToManyField(User,related_name='followers',symmetrical=False,blank=True,null=True)#symmetrical false means if user 1 is following user 2, then viceversa will not be automatically true unless user 2 follows user 1
+    uploads=models.ManyToManyField(Uploads,related_name='uploads',blank=True)
+    profile_pic = models.ImageField(upload_to='ProfilePicture/',default='/pics/GURMUKH DECORATIVE.jpg')
+
+    def __str__(self):
+        return f'{self.user.username} Profile'
+
+
 
